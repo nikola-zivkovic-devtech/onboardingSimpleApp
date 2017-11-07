@@ -6,7 +6,7 @@
  * Time: 11:52
  */
 
-namespace Devtech\Wrappers;
+namespace FurnitureStore\Wrappers;
 
 /**
  * Class DBWrapper
