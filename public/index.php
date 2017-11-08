@@ -26,7 +26,7 @@ switch ($routeInfo[0]) {
         $vars = $routeInfo[2];
         $keys = array_keys($vars);
 
-        $obj = new $controller($itemType);
+        $obj = new $controller($itemType, $db);
 
         if(!empty($vars)) {
             $obj->$method($vars[$keys[0]]);

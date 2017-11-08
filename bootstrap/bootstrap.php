@@ -3,12 +3,17 @@
 require_once '../vendor/autoload.php';
 
 use FurnitureStore\Helpers\Request;
+use FurnitureStore\Databases\Database;
+
+
+Request::prepare();
 
 $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r)
 {
     $r->addRoute('GET', '/[index]', 'Welcome');
-    $r->addRoute('GET', '/store/chairs', 'StoreController@getAll');
+    $r->addRoute('GET', '/store/chair', 'StoreController@getAll');
     $r->addRoute('GET', '/store/chair/{id:[0-9]+}', 'StoreController@getOne');
 });
 
-Request::prepare();
+$db = new Database();
+$db->connect();
