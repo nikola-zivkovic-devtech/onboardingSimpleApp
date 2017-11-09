@@ -32,13 +32,13 @@ class Database
         self::$database->close();
     }
 
-    public function getAll($query)
+    public function getAll($itemType)
     {
-        self::$database->getAll($query);
+        self::$database->getAll($itemType);
     }
 
-    public function getOne($query)
+    public function getOne($itemType, $id)
     {
-        self::$database->getOne($query);
+        self::$database->getOne($itemType, $id);
     }
 }

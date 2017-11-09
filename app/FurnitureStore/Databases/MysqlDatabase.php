@@ -40,8 +40,9 @@ class MysqlDatabase
         $this->database = $db;
     }
 
-    public function getAll($query)
+    public function getAll($itemType)
     {
+        $query = "SELECT * FROM " . $itemType;
         $result = $this->database->query($query);
         $rows = [];
         while($row = $result->fetch_assoc()) {
@@ -50,8 +51,9 @@ class MysqlDatabase
         var_dump($rows);
     }
 
-    public function getOne($query)
+    public function getOne($itemType, $id)
     {
+        $query = "SELECT * FROM " . $itemType . " WHERE id" . $itemType . " = " . $id;
         $result = $this->database->query($query)->fetch_assoc();
         var_dump($result);
     }

@@ -20,14 +20,12 @@ class StoreController
 
     public function getAll()
     {
-        $query = "SELECT * FROM " . $this->itemType;
-        $this->database->getAll($query);
+        $this->database->getAll($this->itemType);
     }
 
     public function getOne($id)
     {
-        $query = "SELECT * FROM " . $this->itemType . " WHERE id" . $this->itemType. "=" . $id;
-        $this->database->getOne($query);
+        $this->database->getOne($this->itemType, $id);
     }
 
 }
