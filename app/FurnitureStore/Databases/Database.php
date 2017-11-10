@@ -6,9 +6,9 @@ use FurnitureStore\Enums\NamespacePaths;
 
 /**
  * Class Database
- *
  * Factory class for database classes.
  *
+ * @property $database
  */
 class Database
 {

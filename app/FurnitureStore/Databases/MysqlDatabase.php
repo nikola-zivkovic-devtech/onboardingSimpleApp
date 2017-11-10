@@ -2,10 +2,16 @@
 
 namespace FurnitureStore\Databases;
 
+use FurnitureStore\Exceptions\DatabaseException;
+use FurnitureStore\Exceptions\EmptyDataException;
+use MongoDB\Driver\Exception\Exception;
+
 /**
  * Class MysqlDatabase
- *
  * MySQL wrapper class
+ *
+ * @property $database   Database instance.
+ * @property $host, $dbName, $username, $password, $port, $type   Database data
  */
 class MysqlDatabase
 {
@@ -29,33 +35,67 @@ class MysqlDatabase
     }
 
 
+    /**
+     * Connects to a MySQL database
+     */
     public function connect()
     {
         $db = new \mysqli($this->host, $this->username, $this->password, $this->dbName, $this->port);
-        //var_dump($db);
         if ($db->connect_errno) {
             die($db->connect_error);
         }
-
         $this->database = $db;
     }
 
+    /**
+     * Queries a MySQL database for all items of a given type
+     *
+     * @param $itemType
+     * @throws DatabaseException
+     * @throws EmptyDataException
+     */
     public function getAll($itemType)
     {
-        $query = "SELECT * FROM " . $itemType;
-        $rows = $this->database->query($query);
-        $result = [];
-        while($row = $rows->fetch_assoc()) {
-            $result[] = $row;
+        try{
+            $query = "SELECT * FROM " . $itemType;
+            $rows = $this->database->query($query);
+            $result = [];
+            while($row = $rows->fetch_assoc()) {
+                $result[] = $row;
+            }
+
+            if (!$result) {
+                throw new EmptyDataException('No ' . $itemType . 's found.');
+            }
+
+            var_dump($result);
+        } catch (Exception $e) {
+            throw new DatabaseException($e->getMessage(), $e->getCode());
         }
-        var_dump($result);
     }
 
+    /**
+     * Queries a MySQL database for an item of a given type that matches a given id
+     *
+     * @param $itemType
+     * @param $id
+     * @throws DatabaseException
+     * @throws EmptyDataException
+     */
     public function getOne($itemType, $id)
     {
-        $query = "SELECT * FROM " . $itemType . " WHERE id" . $itemType . " = " . $id;
-        $result = $this->database->query($query)->fetch_assoc();
-        var_dump($result);
+        try{
+            $query = "SELECT * FROM " . $itemType . " WHERE id" . $itemType . " = " . $id;
+            $result = $this->database->query($query)->fetch_assoc();
+
+            if (!$result) {
+                throw new EmptyDataException('No ' . $itemType . ' with id ' . $id . '.');
+            }
+
+            var_dump($result);
+        } catch (Exception $e) {
+            throw new DatabaseException($e->getMessage(), $e->getCode());
+        }
     }
 
 }

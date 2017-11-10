@@ -2,10 +2,15 @@
 
 namespace FurnitureStore\Controllers;
 
+use FurnitureStore\Databases\Database;
+use FurnitureStore\Exceptions\ErrorOutput;
+
 /**
  * class StoreController
+ * Controller class that directs database requests to the database classes.
  *
- * Controller class that .
+ * @property string $itemType
+ * @property Database $database
  */
 class StoreController
 {
@@ -20,12 +25,20 @@ class StoreController
 
     public function getAll()
     {
-        $this->database->getAll($this->itemType);
+        try {
+            $this->database->getAll($this->itemType);
+        } catch (\Exception $e) {
+            new ErrorOutput($e);
+        }
     }
 
     public function getOne($id)
     {
-        $this->database->getOne($this->itemType, $id);
+        try {
+            $this->database->getOne($this->itemType, $id);
+        } catch (\Exception $e) {
+            new ErrorOutput($e);
+        }
     }
 
 }
