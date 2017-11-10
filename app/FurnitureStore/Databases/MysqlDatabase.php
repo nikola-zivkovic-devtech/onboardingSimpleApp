@@ -43,12 +43,12 @@ class MysqlDatabase
     public function getAll($itemType)
     {
         $query = "SELECT * FROM " . $itemType;
-        $result = $this->database->query($query);
-        $rows = [];
-        while($row = $result->fetch_assoc()) {
-            $rows[] = $row;
+        $rows = $this->database->query($query);
+        $result = [];
+        while($row = $rows->fetch_assoc()) {
+            $result[] = $row;
         }
-        var_dump($rows);
+        var_dump($result);
     }
 
     public function getOne($itemType, $id)
