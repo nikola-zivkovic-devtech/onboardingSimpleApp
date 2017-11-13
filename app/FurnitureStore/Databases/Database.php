@@ -22,7 +22,7 @@ class Database implements IDatabaseHandler
         self::$database = new $class($config);
     }
 
-    public static function connect()
+    public function connect()
     {
         self::$database->connect();
     }

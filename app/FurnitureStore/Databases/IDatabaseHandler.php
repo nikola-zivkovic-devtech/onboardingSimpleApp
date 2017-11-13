@@ -5,7 +5,7 @@ namespace FurnitureStore\Databases;
 
 interface IDatabaseHandler
 {
-    public static function connect();
+    public function connect();
 
     public function getAll($itemType);
 
