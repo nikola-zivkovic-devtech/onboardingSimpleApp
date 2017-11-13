@@ -3,6 +3,7 @@
 namespace FurnitureStore\Controllers;
 
 use FurnitureStore\Databases\Database;
+use FurnitureStore\Databases\IDatabaseHandler;
 
 /**
  * class StoreController
@@ -14,7 +15,7 @@ class StoreController
     private $itemType;
     private $database;
 
-    public function __construct($itemType, Database $database)
+    public function __construct($itemType, IDatabaseHandler $database)
     {
         $this->itemType = $itemType;
         $this->database = $database;

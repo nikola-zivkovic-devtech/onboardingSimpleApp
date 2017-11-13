@@ -10,7 +10,7 @@ use FurnitureStore\Enums\NamespacePaths;
  * Factory class for database classes.
  *
  */
-class Database
+class Database implements IDatabaseHandler
 {
     private static $database;
 
