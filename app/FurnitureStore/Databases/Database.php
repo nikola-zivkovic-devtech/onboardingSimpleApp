@@ -10,7 +10,7 @@ use FurnitureStore\Enums\NamespacePaths;
  *
  * @property $database
  */
-class Database
+class Database implements IDatabaseHandler
 {
     private static $database;
 
@@ -22,7 +22,7 @@ class Database
         self::$database = new $class($config);
     }
 
-    public static function connect()
+    public function connect()
     {
         self::$database->connect();
     }

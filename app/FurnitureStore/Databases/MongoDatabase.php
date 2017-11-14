@@ -15,7 +15,7 @@ use MongoDB\Driver\Query;
  * @property $database   Database instance.
  * @property $host, $dbName, $username, $password, $port, $type   Database data
  */
-class MongoDatabase
+class MongoDatabase implements IDatabaseHandler
 {
     private $manager;
 

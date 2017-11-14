@@ -13,7 +13,7 @@ use MongoDB\Driver\Exception\Exception;
  * @property $database   Database instance.
  * @property $host, $dbName, $username, $password, $port, $type   Database data
  */
-class MysqlDatabase
+class MysqlDatabase implements IDatabaseHandler
 {
     private $database;
 
