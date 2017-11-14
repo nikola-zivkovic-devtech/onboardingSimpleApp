@@ -12,6 +12,7 @@ Steps to run the app:
 - Open localhost:1991 in your browser.
 
 Supported routes:
+/ and /index
 /store/chair
 /store/chair/{id}
 /store/sofa
