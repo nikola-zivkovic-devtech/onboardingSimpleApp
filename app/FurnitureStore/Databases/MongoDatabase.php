@@ -10,7 +10,7 @@ use MongoDB\Driver\Query;
  *
  * MongoDB wrapper class
  */
-class MongoDatabase
+class MongoDatabase implements IDatabaseHandler
 {
     private $manager;
 
