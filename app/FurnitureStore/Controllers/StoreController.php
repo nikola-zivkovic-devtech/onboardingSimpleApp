@@ -2,17 +2,20 @@
 
 namespace FurnitureStore\Controllers;
 
+use FurnitureStore\Databases\Database;
+use FurnitureStore\Databases\IDatabaseHandler;
+
 /**
  * class StoreController
  *
- * Controller class that .
+ * Controller class that contains list of actions for store items.
  */
 class StoreController
 {
     private $itemType;
     private $database;
 
-    public function __construct($itemType, $database)
+    public function __construct($itemType, IDatabaseHandler $database)
     {
         $this->itemType = $itemType;
         $this->database = $database;

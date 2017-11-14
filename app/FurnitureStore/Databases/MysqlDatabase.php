@@ -7,7 +7,7 @@ namespace FurnitureStore\Databases;
  *
  * MySQL wrapper class
  */
-class MysqlDatabase
+class MysqlDatabase implements IDatabaseHandler
 {
     private $database;
 
