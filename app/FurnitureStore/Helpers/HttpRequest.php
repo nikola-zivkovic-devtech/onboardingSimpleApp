@@ -3,11 +3,11 @@
 namespace FurnitureStore\Helpers;
 
 /**
- * Class Request
+ * Class HttpRequest
  *
  * Prepares and returns uri and http method from HTTP requests.
  */
-class Request
+class HttpRequest
 {
     private static $httpMethod;
     private static $uri;
