@@ -34,11 +34,11 @@ class Database implements IDatabaseHandler
 
     public function getAll($itemType)
     {
-        self::$database->getAll($itemType);
+        return self::$database->getAll($itemType);
     }
 
     public function getOne($itemType, $id)
     {
-        self::$database->getOne($itemType, $id);
+        return self::$database->getOne($itemType, $id);
     }
 }

@@ -2,11 +2,11 @@
 
 require_once '../vendor/autoload.php';
 
-use FurnitureStore\Helpers\Request;
+use FurnitureStore\Helpers\HttpRequest;
 use FurnitureStore\Databases\Database;
 
 
-Request::prepare();
+HttpRequest::prepare();
 
 $dispatcher = FastRoute\simpleDispatcher(function(FastRoute\RouteCollector $r)
 {

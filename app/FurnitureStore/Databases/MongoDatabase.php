@@ -2,8 +2,7 @@
 
 namespace FurnitureStore\Databases;
 
-use FurnitureStore\Exceptions\DatabaseException;
-use FurnitureStore\Exceptions\EmptyDataException;
+use FurnitureStore\Models\Response;
 use MongoDB\Driver\Exception\Exception;
 use MongoDB\Driver\Manager;
 use MongoDB\Driver\Query;
@@ -11,9 +10,6 @@ use MongoDB\Driver\Query;
 /**
  * Class MongoDatabase
  * MongoDB wrapper class
- *
- * @property $database   Database instance.
- * @property $host, $dbName, $username, $password, $port, $type   Database data
  */
 class MongoDatabase implements IDatabaseHandler
 {
@@ -42,32 +38,35 @@ class MongoDatabase implements IDatabaseHandler
      */
     public function connect()
     {
-        $manager = new Manager("mongodb://$this->host:$this->port");
-        $this->manager = $manager;
+        $response = new Response();
+
+        try {
+            $manager = new Manager("mongodb://$this->host:$this->port");
+            $this->manager = $manager;
+        } catch (\Exception $e) {
+            $response->handleException($e);
+        }
     }
 
     /**
      * Queries a Mongo database for all items of a given type
      *
      * @param $itemType
-     * @throws DatabaseException
-     * @throws EmptyDataException
+     * @return Response
      */
     public function getAll($itemType)
     {
+        $response = new Response();
+
         try{
             $query = new Query([]);
-            $result = $this->manager->executeQuery('furniture.' . $itemType, $query);
-            $result = $this->extractDataToArray($result);
-
-            if (!$result) {
-                throw new EmptyDataException('No ' . $itemType . 's found.');
-            }
-
-            var_dump($result);
+            $result = $this->manager->executeQuery($this->dbName . '.' . $itemType, $query);
+            $response->data = $this->extractDataToArray($result);
         } catch (Exception $e) {
-            throw new DatabaseException($e->getMessage(), $e->getCode());
+            $response->handleException($e);
         }
+
+        return $response;
     }
 
     /**
@@ -75,24 +74,21 @@ class MongoDatabase implements IDatabaseHandler
      *
      * @param $itemType
      * @param $id
-     * @throws DatabaseException
-     * @throws EmptyDataException
+     * @return Response
      */
     public function getOne($itemType, $id)
     {
+        $response = new Response();
+
         try {
-            $query = new Query(['id' . $itemType => $id]);
-            $result = $this->manager->executeQuery('furniture.' . $itemType, $query);
-            $result = $this->extractDataToArray($result);
-
-            if (!$result) {
-                throw new EmptyDataException('No ' . $itemType . ' with id ' . $id . '.');
-            }
-
-            var_dump($result);
+            $query = new Query(['id' => $id]);
+            $result = $this->manager->executeQuery($this->dbName . '.' . $itemType, $query);
+            $response->data = $this->extractDataToArray($result);
         } catch (Exception $e) {
-            throw new DatabaseException($e->getMessage(), $e->getCode());
+            $response->handleException($e);
         }
+
+        return $response;
     }
 
 

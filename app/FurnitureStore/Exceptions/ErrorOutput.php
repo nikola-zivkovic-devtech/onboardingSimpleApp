@@ -15,7 +15,7 @@ namespace FurnitureStore\Exceptions;
  */
 class ErrorOutput
 {
-    public function __construct($errorObject)
+    /*public function __construct($errorObject)
     {
         $exceptionClassName = $this->getExceptionClassName($errorObject);
         echo $exceptionClassName, ": ", $errorObject->getMessage(), "<br>";
@@ -27,5 +27,9 @@ class ErrorOutput
         $classFullName = get_class($errorObject);
         $array = array_reverse(explode('\\', $classFullName));
         return $array[0];
+    }*/
+
+    public static function say(\Exception $e) {
+        echo $e->getMessage();
     }
 }

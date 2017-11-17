@@ -4,11 +4,11 @@ require_once '../bootstrap/bootstrap.php';
 use FurnitureStore\Enums\NamespacePaths;
 use FurnitureStore\Exceptions\ErrorOutput;
 use FurnitureStore\Exceptions\RoutingException;
-use FurnitureStore\Helpers\Request;
+use FurnitureStore\Helpers\HttpRequest;
 
-$routeInfo = $dispatcher->dispatch(Request::getHttpMethod(), Request::getUri());
+$routeInfo = $dispatcher->dispatch(HttpRequest::getHttpMethod(), HttpRequest::getUri());
 
-$uriInfo = explode('/', Request::getUri());
+$uriInfo = explode('/', HttpRequest::getUri());
 if(isset($uriInfo[2])) {
     $itemType = $uriInfo[2];
 }
