@@ -3,6 +3,7 @@
 namespace FurnitureStore\Databases;
 
 use FurnitureStore\Enums\NamespacePaths;
+use FurnitureStore\Logger\ILogger;
 
 /**
  * Class Database
@@ -14,22 +15,15 @@ class Database implements IDatabaseHandler
 {
     private static $database;
 
-    public function __construct()
+    public function __construct($config, ILogger $logger)
     {
-        $config = parse_ini_file('../config/config.ini');
-
         $class = NamespacePaths::DATABASES_PATH . $config['type'] . "Database";
-        self::$database = new $class($config);
+        self::$database = new $class($config, $logger);
     }
 
     public function connect()
     {
         self::$database->connect();
-    }
-
-    public function close()
-    {
-        self::$database->close();
     }
 
     public function getAll($itemType)

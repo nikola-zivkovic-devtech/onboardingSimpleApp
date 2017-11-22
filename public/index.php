@@ -19,7 +19,6 @@ if(count($routeInfo) > 1) {
     $method = $controllerInfo[1];
 }
 
-
 switch ($routeInfo[0]) {
     case FastRoute\Dispatcher::NOT_FOUND:
         new ErrorOutput(new RoutingException('404 not found'));
@@ -34,16 +33,12 @@ switch ($routeInfo[0]) {
         $vars = $routeInfo[2];
         $keys = array_keys($vars);
 
-        if (isset($itemType)) {
-            $obj = new $controller($itemType, $db);
-        } else {
-            $obj = new $controller();
-        }
+        $controllerObject = new $controller($itemType, $db, $logger);
 
         if(!empty($vars)) {
-            $obj->$method($vars[$keys[0]]);
+            $controllerObject->$method($vars[$keys[0]]);
         } else {
-            $obj->$method();
+            $controllerObject->$method();
         }
 
         break;

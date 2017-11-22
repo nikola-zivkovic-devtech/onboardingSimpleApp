@@ -2,7 +2,6 @@
 
 namespace FurnitureStore\Controllers;
 
-use FurnitureStore\Databases\Database;
 use FurnitureStore\Databases\IDatabaseHandler;
 use FurnitureStore\Enums\Messages;
 use FurnitureStore\Exceptions\ErrorOutput;
@@ -12,7 +11,7 @@ use FurnitureStore\Exceptions\ErrorOutput;
  * Controller class that directs database requests to the database classes.
  *
  * @property string $itemType
- * @property Database $database
+ * @property IDatabaseHandler $database
  */
 class StoreController
 {

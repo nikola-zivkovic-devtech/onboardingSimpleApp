@@ -1,0 +1,4 @@
+localhost - 2017-11-22 15:56:36 - 6 - Connected to MySQL database.
+localhost - 2017-11-22 15:56:36 - 6 - MySQL - retrieved all chairs.
+localhost - 2017-11-22 15:56:47 - 6 - Connected to MySQL database.
+localhost - 2017-11-22 15:56:47 - 6 - MySQL - Retrieved a chair with id 11.

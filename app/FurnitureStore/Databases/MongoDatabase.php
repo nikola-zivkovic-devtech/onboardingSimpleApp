@@ -2,6 +2,7 @@
 
 namespace FurnitureStore\Databases;
 
+use FurnitureStore\Logger\ILogger;
 use FurnitureStore\Models\Response;
 use MongoDB\Driver\BulkWrite;
 use MongoDB\Driver\Exception\Exception;
@@ -15,7 +16,7 @@ use MongoDB\Driver\Query;
 class MongoDatabase implements IDatabaseHandler
 {
     private $manager;
-
+    private $logger;
     private $host;
     private $dbName;
     private $username;
@@ -23,7 +24,7 @@ class MongoDatabase implements IDatabaseHandler
     private $port;
     private $type;
 
-    public function __construct($dbData)
+    public function __construct($dbData, ILogger $logger)
     {
         $this->host = $dbData['host'];
         $this->dbName = $dbData['dbname'];
@@ -31,6 +32,8 @@ class MongoDatabase implements IDatabaseHandler
         $this->password = $dbData['password'];
         $this->port = $dbData['port'];
         $this->type = $dbData['type'];
+
+        $this->logger = $logger;
     }
 
 
@@ -44,8 +47,10 @@ class MongoDatabase implements IDatabaseHandler
         try {
             $manager = new Manager("mongodb://$this->host:$this->port");
             $this->manager = $manager;
+            $this->logger->info("Connected to MongoDB database.");
         } catch (\Exception $e) {
             $response->handleException($e);
+            $this->logger->error("Connection to MongoDB database failed.");
         }
     }
 
@@ -63,8 +68,10 @@ class MongoDatabase implements IDatabaseHandler
             $query = new Query([]);
             $result = $this->manager->executeQuery($this->dbName . '.' . $itemType, $query);
             $response->data = $this->extractDataToArray($result);
+            $this->logger->info("MongoDB - retrieved all $itemType" . "s.");
         } catch (Exception $e) {
             $response->handleException($e);
+            $this->logger->error("MongoDB - retrieving of all $itemType" . "s failed.");
         }
 
         return $response;
@@ -85,8 +92,10 @@ class MongoDatabase implements IDatabaseHandler
             $query = new Query(['id' => $id]);
             $result = $this->manager->executeQuery($this->dbName . '.' . $itemType, $query);
             $response->data = $this->extractDataToArray($result);
+            $this->logger->info("MongoDB - Retrieved a $itemType with id $id.");
         } catch (Exception $e) {
             $response->handleException($e);
+            $this->logger->error("MongoDB - Retrieving of a $itemType with id $id failed.");
         }
 
         return $response;
@@ -116,9 +125,11 @@ class MongoDatabase implements IDatabaseHandler
 
             $request->insert($item);
             $this->manager->executeBulkWrite($this->dbName . '.' . $itemType, $request);
-            $response->message = ucfirst($itemType) . " successfully created.";
+            $response->message = ucfirst($itemType) . " $newItem->name successfully created.";
+            $this->logger->info("MongoDB - $response->message");
         } catch (Exception $e) {
             $response->handleException($e);
+            $this->logger->error("MongoDB - $itemType could not be created.");
         }
 
         return $response;
@@ -141,9 +152,11 @@ class MongoDatabase implements IDatabaseHandler
             $request = new BulkWrite();
             $request->delete(['_id' => $item[0]->_id]);
             $response->data = $this->manager->executeBulkWrite($this->dbName . '.' . $itemType, $request);
-            $response->message = ucfirst($itemType) . " successfully deleted.";
+            $this->logger->info("MongoDB - $response->message");
+            $response->message = ucfirst($itemType) . " " . $item['name'] . "successfully deleted.";
         } catch (Exception $e) {
             $response->handleException($e);
+            $this->logger->error("MongoDB - $itemType could not be deleted.");
         }
 
         return $response;
@@ -178,9 +191,11 @@ class MongoDatabase implements IDatabaseHandler
             $request->update($filter, $object, ['upsert' => false]);
             $this->manager->executeBulkWrite($this->dbName . '.' . $itemType, $request);
             $response->data = $updatedItem;
-            $response->message = ucfirst($itemType) . " successfully updated.";
+            $response->message = ucfirst($itemType) . " " . $item['name'] . "successfully updated.";
+            $this->logger->info("MySQL - $response->message");
         } catch (Exception $e) {
             $response->handleException($e);
+            $this->logger->error("MongoDB - $itemType could not be updated.");
         }
         return $response;
     }

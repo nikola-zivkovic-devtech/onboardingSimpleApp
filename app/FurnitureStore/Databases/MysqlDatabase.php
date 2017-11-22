@@ -2,18 +2,26 @@
 
 namespace FurnitureStore\Databases;
 
+use FurnitureStore\Logger\ILogger;
 use FurnitureStore\Models\Response;
 
 /**
  * Class MysqlDatabase
  * MySQL wrapper class
  *
- * @property $database   Database instance.
- * @property $host, $dbName, $username, $password, $port, $type   Database data
+ * @property $database
+ * @property $logger
+ * @property $host
+ * @property $dbName
+ * @property $username
+ * @property $password
+ * @property $port
+ * @property $type
  */
 class MysqlDatabase implements IDatabaseHandler
 {
     private $database;
+    private $logger;
 
     private $host;
     private $dbName;
@@ -22,7 +30,7 @@ class MysqlDatabase implements IDatabaseHandler
     private $port;
     private $type;
 
-    public function __construct($dbData)
+    public function __construct($dbData, ILogger $logger)
     {
         $this->host = $dbData['host'];
         $this->dbName = $dbData['dbname'];
@@ -30,6 +38,8 @@ class MysqlDatabase implements IDatabaseHandler
         $this->password = $dbData['password'];
         $this->port = $dbData['port'];
         $this->type = $dbData['type'];
+
+        $this->logger = $logger;
     }
 
 
@@ -46,8 +56,10 @@ class MysqlDatabase implements IDatabaseHandler
                 die($db->connect_error);
             }
             $this->database = $db;
+            $this->logger->info("Connected to MySQL database.");
         } catch (\Exception $e) {
             $response->handleException($e);
+            $this->logger->error("Connection to MySQL database failed.");
         }
     }
 
@@ -62,15 +74,17 @@ class MysqlDatabase implements IDatabaseHandler
         $response = new Response();
 
         try{
-            $query = "SELECT * FROM " . $itemType;
+            $query = "SELECT * FROM " . $itemType . ";";
             $rows = $this->database->query($query);
             $result = [];
             while($row = $rows->fetch_assoc()) {
                 $result[] = $row;
             }
             $response->data = $result;
+            $this->logger->info("MySQL - retrieved all $itemType" . "s.");
         } catch (\Exception $e) {
             $response->handleException($e);
+            $this->logger->error("MySQL - retrieving of all $itemType" . "s failed.");
         }
 
         return $response;
@@ -88,11 +102,13 @@ class MysqlDatabase implements IDatabaseHandler
         $response = new Response();
 
         try{
-            $query = "SELECT * FROM " . $itemType . " WHERE id = " . $id;
+            $query = "SELECT * FROM " . $itemType . " WHERE id = " . $id . ";";
             $result = $this->database->query($query)->fetch_assoc();
             $response->data = $result;
+            $this->logger->info("MySQL - Retrieved a $itemType with id $id.");
         } catch (\Exception $e) {
             $response->handleException($e);
+            $this->logger->error("MySQL - Retrieving of a $itemType with id $id failed.");
         }
 
         return $response;
@@ -114,12 +130,14 @@ class MysqlDatabase implements IDatabaseHandler
             $result = $this->database->query($query);
             if ($result) {
                 $response->data = $newItem;
-                $response->message = ucfirst($itemType) . " successfully created.";
+                $response->message = ucfirst($itemType) . " $newItem->name successfully created.";
+                $this->logger->info("MySQL - $response->message");
             } else {
-                throw new \Exception("The $itemType could not be created.");
+                throw new \Exception(ucfirst($itemType) . "  could not be created.");
             }
         } catch (\Exception $e) {
             $response->handleException($e);
+            $this->logger->error("MySQL - $itemType could not be created.");
         }
 
         return $response;
@@ -143,12 +161,14 @@ class MysqlDatabase implements IDatabaseHandler
             $result = $this->database->query($query);
 
             if ($result) {
-                $response->message = ucfirst($itemType) . " successfully deleted.";
+                $response->message = ucfirst($itemType) . " " . $item['name'] . "successfully deleted.";
+                $this->logger->info("MySQL - $response->message");
             } else {
-                throw new \Exception("The $itemType could not be deleted.");
+                throw new \Exception(ucfirst($itemType) . "  could not be deleted.");
             }
         } catch (\Exception $e) {
             $response->handleException($e);
+            $this->logger->error("MySQL - $itemType could not be deleted.");
         }
 
         return $response;
@@ -174,12 +194,14 @@ class MysqlDatabase implements IDatabaseHandler
             $result = $this->database->query($query);
             if ($result) {
                 $response->data = $updatedItem;
-                $response->message = ucfirst($itemType) . " successfully updated.";
+                $response->message = ucfirst($itemType) . " " . $item['name'] . "successfully updated.";
+                $this->logger->info("MySQL - $response->message");
             } else {
-                throw new \Exception("The $itemType could not be updated.");
+                throw new \Exception(ucfirst($itemType) . "  could not be updated.");
             }
         } catch (\Exception $e) {
             $response->handleException($e);
+            $this->logger->error("MySQL - $itemType could not be updated.");
         }
 
         return $response;
