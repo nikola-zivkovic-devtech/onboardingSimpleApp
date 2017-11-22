@@ -9,11 +9,11 @@ Steps to run the app:
     composer install
 - Run PHP built-in server with following command:
     php -S localhost:1991 -t public/
-- Open localhost:1991 in your browser.
+- Send requests from Postman to localhost:1991
 
 Supported routes:
-/ and /index
-/store/chair
-/store/chair/{id}
-/store/sofa
-/store/sofa/{id}
+GET /store/chair         -  get all chairs
+GET /store/chair/{id}    -  gets a specific chair
+POST /store/chair        -  creates a new chair
+PUT /store/chair/{id}    -  updates a specific chair
+DELETE /store/chair/{id} -  deletes a specific chair
