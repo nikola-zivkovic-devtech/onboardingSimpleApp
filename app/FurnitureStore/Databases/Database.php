@@ -41,4 +41,19 @@ class Database implements IDatabaseHandler
     {
         return self::$database->getOne($itemType, $id);
     }
+
+    public function create($itemType, $newItem)
+    {
+        return self::$database->create($itemType, $newItem);
+    }
+
+    public function delete($itemType, $id)
+    {
+        return self::$database->delete($itemType, $id);
+    }
+
+    public function update($itemType, $id, $updatedItem)
+    {
+        return self::$database->update($itemType, $id, $updatedItem);
+    }
 }
