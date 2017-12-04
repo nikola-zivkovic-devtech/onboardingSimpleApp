@@ -88,7 +88,7 @@ class MysqlDatabase implements IDatabaseHandler
         $response = new Response();
 
         try{
-            $query = "SELECT * FROM " . $itemType . " WHERE id" . $itemType . " = " . $id;
+            $query = "SELECT * FROM " . $itemType . " WHERE id = " . $id;
             $result = $this->database->query($query)->fetch_assoc();
             $response->data = $result;
         } catch (\Exception $e) {
@@ -96,6 +96,103 @@ class MysqlDatabase implements IDatabaseHandler
         }
 
         return $response;
+    }
+
+    /**
+     * Creates an item in mysql database
+     *
+     * @param $itemType
+     * @param $newItem
+     * @return Response
+     */
+    public function create($itemType, $newItem)
+    {
+        $response = new Response();
+
+        try{
+            $query = "INSERT INTO " . $itemType . " (name, price, colour, material, size) VALUES ('" . $newItem->name . "', " . $newItem->price . ", '" . $newItem->colour . "', '" . $newItem->material . "', '" . $newItem->size . "');";
+            $result = $this->database->query($query);
+            if ($result) {
+                $response->data = $newItem;
+                $response->message = ucfirst($itemType) . " successfully created.";
+            } else {
+                throw new \Exception("The $itemType could not be created.");
+            }
+        } catch (\Exception $e) {
+            $response->handleException($e);
+        }
+
+        return $response;
+    }
+
+    /**
+     * Deletes an item from mysql database
+     *
+     * @param $itemType
+     * @param $id
+     * @return Response
+     */
+    public function delete($itemType, $id)
+    {
+        $response = new Response();
+
+        try{
+            $item = $this->getItemById($id, $itemType);
+
+            $query = "DELETE FROM " . $itemType . " WHERE id = " . $item['id'];
+            $result = $this->database->query($query);
+
+            if ($result) {
+                $response->message = ucfirst($itemType) . " successfully deleted.";
+            } else {
+                throw new \Exception("The $itemType could not be deleted.");
+            }
+        } catch (\Exception $e) {
+            $response->handleException($e);
+        }
+
+        return $response;
+    }
+
+    /**
+     * Updates an item in mysql database
+     *
+     * @param $itemType
+     * @param $id
+     * @param $updatedItem
+     * @return Response
+     */
+    public function update($itemType, $id, $updatedItem)
+    {
+        $response = new Response();
+
+        try{
+            $item = $this->getItemById($id, $itemType);
+
+
+            $query = "UPDATE $itemType SET name = '" . $updatedItem->name . "', price = " . $updatedItem->price. ", colour = '" . $updatedItem->colour . "', material = '" . $updatedItem->material . "', size = '" . $updatedItem->size . "' WHERE id = " . $item['id'] . ";";
+            $result = $this->database->query($query);
+            if ($result) {
+                $response->data = $updatedItem;
+                $response->message = ucfirst($itemType) . " successfully updated.";
+            } else {
+                throw new \Exception("The $itemType could not be updated.");
+            }
+        } catch (\Exception $e) {
+            $response->handleException($e);
+        }
+
+        return $response;
+    }
+
+    private function getItemById($id, $itemType)
+    {
+        $query = "SELECT * FROM " . $itemType . " WHERE id = " . $id;
+        $result = $this->database->query($query)->fetch_assoc();
+        if (sizeof($result) < 1) {
+            throw new \Exception("There are no items with id $id.");
+        }
+        return $result;
     }
 
 }

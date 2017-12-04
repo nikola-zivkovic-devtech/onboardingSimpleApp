@@ -4,8 +4,6 @@ namespace FurnitureStore\Models;
 
 /**
  * Class Response
- *
- *
  */
 class Response {
 
@@ -13,9 +11,15 @@ class Response {
     public $message;
     public $data;
     public $exception;
+    // code could be added because mongo returns no body for update action
 
     public function __construct() {
         $this->success = true;
+    }
+
+    public function json()
+    {
+        return json_encode($this);
     }
 
     public function handleException(\Exception $e) {
@@ -23,9 +27,7 @@ class Response {
         $this->message = $e->getMessage();
         $this->exception = $e;
     }
-
-    public function json()
-    {
-        return json_encode($this->data);
-    }
 }
+
+
+
